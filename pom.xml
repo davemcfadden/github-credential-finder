@@ -18,8 +18,18 @@
 		    <version>4.2.6.RELEASE</version>
 		</dependency>
 		
-		
-	
+		 <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+    		<version>4.2.6.RELEASE</version>       
+     	</dependency>
+     	
+     	<dependency>
+		   <groupId>log4j</groupId>
+		   <artifactId>log4j</artifactId>
+		   <version>1.2.17</version>
+		  </dependency>
+		  
 	    <dependency>
 		  <groupId>org.eclipse.mylyn.github</groupId>
 		  <artifactId>org.eclipse.egit.github.core</artifactId>
