@@ -8,31 +8,32 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GitConfig {
-	
-	private GitHubClient client;
-	private RepositoryService service;
-	
-	@Autowired
-	public GitConfig(@Value("${github.username}") String username, @Value("${github.password}")	String password){
-		client = new GitHubClient();
-		this.client.setCredentials(username, password);
-		this.service = new RepositoryService(client);
-	}
 
-	public RepositoryService getService() {
-		return service;
-	}
+  private GitHubClient client;
+  private RepositoryService service;
 
-	public void setService(RepositoryService service) {
-		this.service = service;
-	}
+  @Autowired
+  public GitConfig(@Value("${github.username}") String username,
+      @Value("${github.password}") String password) {
+    client = new GitHubClient();
+    this.client.setCredentials(username, password);
+    this.service = new RepositoryService(client);
+  }
 
-	public GitHubClient getClient() {
-		return client;
-	}
+  public RepositoryService getService() {
+    return service;
+  }
 
-	public void setClient(GitHubClient client) {
-		this.client = client;
-	}
+  public void setService(RepositoryService service) {
+    this.service = service;
+  }
+
+  public GitHubClient getClient() {
+    return client;
+  }
+
+  public void setClient(GitHubClient client) {
+    this.client = client;
+  }
 
 }
