@@ -12,25 +12,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FinderInializer{
-	
-	@Autowired
-	RepositoryScanner repoScanner;
-	
-	@Autowired
-	GitConfig config;
-	
-	final static Logger LOGGER = Logger.getLogger(FinderInializer.class);
+public class FinderInializer {
 
-	public void run(){
-		List<Repository> repos = new ArrayList<Repository>();
-		try {
-			//just grabbing a single repo for testing
-			repos.add(config.getService().getRepository("davemcfadden", "aws-dynamo-service"));
-		} catch (IOException e) {
-			LOGGER.error("Failed to retrieve repos : " + e);
-		}		
-		repoScanner.scanRepository(repos);
-	}
+  @Autowired
+  private RepositoryScanner repoScanner;
+
+  @Autowired
+  private GitConfig config;
+
+  private final static Logger LOGGER = Logger.getLogger(FinderInializer.class);
+
+  public void run() {
+    List<Repository> repos = new ArrayList<Repository>();
+    try {
+      // just grabbing a single repo for testing
+      repos.add(config.getService().getRepository("davemcfadden", "aws-dynamo-service"));
+    } catch (IOException e) {
+      LOGGER.error("Failed to retrieve repos : " + e);
+    }
+    repoScanner.scanRepository(repos);
+  }
 }
-	
+
