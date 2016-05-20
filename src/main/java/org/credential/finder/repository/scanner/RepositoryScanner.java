@@ -20,6 +20,10 @@ public class RepositoryScanner {
 
   @Autowired
   private GitConfig config;
+  
+  
+  private final static String DIRECTORY = "dir";
+  private final static String FILE = "file";
 
   private final static Logger LOGGER = Logger.getLogger(RepositoryScanner.class);
 
@@ -42,28 +46,22 @@ public class RepositoryScanner {
 
   private void contentsScanner(List<RepositoryContents> contents, Repository repo) {
     for (RepositoryContents content : contents) {
-      // System.out.println(content.getType().toString());
-      if (content.getType().equals("dir")) {
+      if (content.getType().equals(DIRECTORY)) {
         try {
           scanDirectory(content, repo);
         } catch (IOException e) {
           LOGGER.error("Failed to scan directory : " + e);
         }
-      } else if (content.getType().equals("file")) {
+      } else if (content.getType().equals(FILE)) {
         scanFile(content);
       }
     }
   }
 
+  //TODO try and speed this up
   private void scanDirectory(RepositoryContents content, Repository repo) throws IOException {
-    LOGGER.info("We need to rescan this folder and look for files.." + content.getName());
     List<RepositoryContents> contents = callContentsService(repo, content.getPath());
     contentsScanner(contents, repo);
-  }
-
-  private void scanFile(RepositoryContents content) {
-    LOGGER.info("We need to scan this file and look for credentials..");
-    System.out.println(content.getName());
   }
 
   private List<RepositoryContents> callContentsService(Repository repo, String path)
@@ -73,5 +71,11 @@ public class RepositoryScanner {
     contents = contentsService.getContents(repo, path);
     return contents;
   }
-
+  
+  //TODO if possible use the contents service to get the contents of the files
+  private void scanFile(RepositoryContents content) {
+    LOGGER.info("We need to scan this file and look for credentials..");
+    System.out.println(content.getName());
+  }
 }
+
