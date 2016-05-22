@@ -3,12 +3,15 @@ package org.credential.finder.repository.scanner;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.credential.finder.analyzer.FileAnalyzer;
 import org.credential.finder.config.GitConfig;
-import org.credential.finder.issue.generator.IssueGenerator;
+import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.service.ContentsService;
+import org.eclipse.egit.github.core.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +19,14 @@ import org.springframework.stereotype.Component;
 public class RepositoryScanner {
 
   @Autowired
-  private IssueGenerator issueGenerator;
+  private FileAnalyzer analyzer;
 
   @Autowired
   private GitConfig config;
   
-  
   private final static String DIRECTORY = "dir";
   private final static String FILE = "file";
+  private String encoding = Blob.ENCODING_UTF8;
 
   private final static Logger LOGGER = Logger.getLogger(RepositoryScanner.class);
 
@@ -38,9 +41,6 @@ public class RepositoryScanner {
       } catch (IOException e) {
         LOGGER.error("Cannot get contents from repo " + repo.getName() + " : " + e);
       }
-      if (repo.getName().equals("github-credential-finder")) {
-        // issueGenerator.createIssue(repo,client);
-      }
     }
   }
 
@@ -53,7 +53,7 @@ public class RepositoryScanner {
           LOGGER.error("Failed to scan directory : " + e);
         }
       } else if (content.getType().equals(FILE)) {
-        scanFile(content);
+        scanFile(content , repo);
       }
     }
   }
@@ -72,10 +72,25 @@ public class RepositoryScanner {
     return contents;
   }
   
-  //TODO if possible use the contents service to get the contents of the files
-  private void scanFile(RepositoryContents content) {
+  //TODO create internal queue to pop file contents onto a queue which can be
+  //analysed by another thread running FileAnalyzer
+  private void scanFile(RepositoryContents content, Repository repo) {
     LOGGER.info("We need to scan this file and look for credentials..");
-    System.out.println(content.getName());
+    //if(content.getName().equalsIgnoreCase("readme.md")){
+        DataService dataService = new DataService();
+        String fileAsText = null;
+        try {
+        	Blob response = dataService.getBlob(repo, content.getSha());
+        	//lets validate our response type before trying to decode..
+            if (response.getEncoding().equals(Blob.ENCODING_BASE64)
+                && encoding != null && encoding.equalsIgnoreCase(Blob.ENCODING_UTF8)) {
+            	fileAsText = new String(Base64.decodeBase64(response.getContent()));
+                System.out.println("Decoded value is " + new String(fileAsText));
+                analyzer.analyseFile(fileAsText,repo, content);
+            }
+		} catch (IOException e) {
+			LOGGER.error("Error in getting file data : " + e);;
+		}
   }
 }
 

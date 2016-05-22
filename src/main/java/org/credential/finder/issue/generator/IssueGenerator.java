@@ -4,19 +4,24 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.credential.finder.config.GitConfig;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.service.IssueService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IssueGenerator {
+	
+  @Autowired
+  GitConfig config;
 
   private final static Logger LOGGER = Logger.getLogger(IssueGenerator.class);
 
-  public Issue createIssue(Repository repo, GitHubClient client) {
-    IssueService issueService = new IssueService(client);
+  public Issue createIssue(Repository repo, RepositoryContents content) {
+    IssueService issueService = new IssueService(config.getClient());
     Issue issue = new Issue();
     issue.setTitle("Non encrypted credentials");
     issue.setAssignee(repo.getOwner());
