@@ -15,12 +15,12 @@ public class Util {
 
   private final static Logger LOGGER = Logger.getLogger(Util.class);
 
-  public String repositoryUserContentUrl(Repository repo, String branch) {
+  public static String repositoryUserContentUrl(Repository repo, String branch) {
     String url = repo.getHtmlUrl() + "/" + branch + "/";
     return url.replace("github.com", "raw.githubusercontent.com");
   }
 
-  public List<String> getHazardStrings() {
+  public static List<String> getHazardStrings() {
     try {
       return Files.readAllLines(Paths.get("src/main/resources/flaggers.txt"));
     } catch (IOException e) {
