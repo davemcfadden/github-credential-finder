@@ -26,7 +26,7 @@ public class FileAnalyzer{
     List<String> hazardStrings = util.getHazardStrings();
     // TODO lets fine the stings
     LOGGER.debug("Searching file : " + content.getName() + " for passwords");
-     issueGenerator.createIssue(repo,content);
+    //issueGenerator.createIssue(repo,content);
   }
 
 }
