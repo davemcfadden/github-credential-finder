@@ -13,10 +13,10 @@ public class GitConfig {
   private RepositoryService service;
 
   @Autowired
-  public GitConfig(@Value("${github.username}") String username,
-      @Value("${github.password}") String password) {
+  public GitConfig(@Value("${github.api.authorizationToken}") String token) {
     client = new GitHubClient();
-    this.client.setCredentials(username, password);
+    this.client.setOAuth2Token(token);
+    //this.client.setCredentials(username, password);
     this.service = new RepositoryService(client);
   }
 
