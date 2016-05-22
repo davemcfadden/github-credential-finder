@@ -26,7 +26,8 @@ public class FinderInializer {
     List<Repository> repos = new ArrayList<Repository>();
     try {
       // just grabbing a single repo for testing
-      repos.add(config.getService().getRepository("davemcfadden", "aws-dynamo-service"));
+      repos.addAll(config.getService().getRepositories("davemcfadden"));
+      //repos.add(config.getService().getRepository("davemcfadden", "aws-dynamo-service"));
     } catch (IOException e) {
       LOGGER.error("Failed to retrieve repos : " + e);
     }

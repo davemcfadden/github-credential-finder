@@ -1,9 +1,11 @@
 package org.credential.finder.repository.scanner;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.credential.finder.analyzer.FileAnalyzer;
 import org.credential.finder.config.GitConfig;
@@ -13,6 +15,7 @@ import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +27,12 @@ public class RepositoryScanner {
   @Autowired
   private GitConfig config;
   
+  @Value("${ignore.file.extentions}")
+  private String[] ignoredExtensions;
+  
+  @Value("${ignore.file.names}")
+  private String[] ignoredFileNames;
+
   private final static String DIRECTORY = "dir";
   private final static String FILE = "file";
   private String encoding = Blob.ENCODING_UTF8;
@@ -53,12 +62,17 @@ public class RepositoryScanner {
           LOGGER.error("Failed to scan directory : " + e);
         }
       } else if (content.getType().equals(FILE)) {
-        scanFile(content , repo);
+        //get file type
+        String fileExtention = StringUtils.substring(content.getName(), StringUtils.lastIndexOf(content.getName(), ".") + 1);
+        if(!Arrays.asList(ignoredExtensions).contains(fileExtention) &&
+            !Arrays.asList(ignoredFileNames).contains(content.getName())){
+          scanFile(content, repo);
+        }
       }
     }
   }
 
-  //TODO try and speed this up
+  // TODO try and speed this up
   private void scanDirectory(RepositoryContents content, Repository repo) throws IOException {
     List<RepositoryContents> contents = callContentsService(repo, content.getPath());
     contentsScanner(contents, repo);
@@ -71,26 +85,26 @@ public class RepositoryScanner {
     contents = contentsService.getContents(repo, path);
     return contents;
   }
-  
-  //TODO create internal queue to pop file contents onto a queue which can be
-  //analysed by another thread running FileAnalyzer
+
+  // TODO create internal queue to pop file contents onto a queue which can be
+  // analysed by another thread running FileAnalyzer
   private void scanFile(RepositoryContents content, Repository repo) {
     LOGGER.info("We need to scan this file and look for credentials..");
-    //if(content.getName().equalsIgnoreCase("readme.md")){
-        DataService dataService = new DataService();
-        String fileAsText = null;
-        try {
-        	Blob response = dataService.getBlob(repo, content.getSha());
-        	//lets validate our response type before trying to decode..
-            if (response.getEncoding().equals(Blob.ENCODING_BASE64)
-                && encoding != null && encoding.equalsIgnoreCase(Blob.ENCODING_UTF8)) {
-            	fileAsText = new String(Base64.decodeBase64(response.getContent()));
-                System.out.println("Decoded value is " + new String(fileAsText));
-                analyzer.analyseFile(fileAsText,repo, content);
-            }
-		} catch (IOException e) {
-			LOGGER.error("Error in getting file data : " + e);;
-		}
+    // if(content.getName().equalsIgnoreCase("readme.md")){
+    DataService dataService = new DataService();
+    String fileAsText = null;
+    try {
+      Blob response = dataService.getBlob(repo, content.getSha());
+      // lets validate our response type before trying to decode..
+      if (response.getEncoding().equals(Blob.ENCODING_BASE64) && encoding != null
+          && encoding.equalsIgnoreCase(Blob.ENCODING_UTF8)) {
+        fileAsText = new String(Base64.decodeBase64(response.getContent()));
+        System.out.println("Decoded value is " + new String(fileAsText));
+        analyzer.analyseFile(fileAsText, repo, content);
+      }
+    } catch (IOException e) {
+      LOGGER.error("Error in getting file data : " + e);;
+    }
   }
 }
 

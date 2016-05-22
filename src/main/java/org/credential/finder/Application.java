@@ -7,8 +7,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Application {
   public static void main(String[] args) {
-    ApplicationContext context = new ClassPathXmlApplicationContext("spring-context.xml");
-    context.getBean(FinderInializer.class).run();
+    ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+     context.getBean(FinderInializer.class).run();
     ((ConfigurableApplicationContext) context).close();
   }
 }

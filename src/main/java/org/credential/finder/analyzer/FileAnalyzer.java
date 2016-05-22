@@ -12,23 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FileAnalyzer {
-	
-	@Autowired
-	private Util util;
-	
-	@Autowired
-	private IssueGenerator issueGenerator;
-	
-	private final static Logger LOGGER = Logger.getLogger(FinderInializer.class);
+public class FileAnalyzer{
 
-	
-	public void analyseFile(String file, Repository repo, RepositoryContents content){
-		List<String> hazardStrings = util.getHazardStrings();
-		//TODO lets fine the stings
-		LOGGER.debug("Searching file : " + content.getName() + " for passwords");
-		
-		//issueGenerator.createIssue(repo,content);
-	}
+  @Autowired
+  private Util util;
+
+  @Autowired
+  private IssueGenerator issueGenerator;
+  
+  private final static Logger LOGGER = Logger.getLogger(FinderInializer.class);
+
+  public void analyseFile(String file, Repository repo, RepositoryContents content) {
+    List<String> hazardStrings = util.getHazardStrings();
+    // TODO lets fine the stings
+    LOGGER.debug("Searching file : " + content.getName() + " for passwords");
+     issueGenerator.createIssue(repo,content);
+  }
 
 }

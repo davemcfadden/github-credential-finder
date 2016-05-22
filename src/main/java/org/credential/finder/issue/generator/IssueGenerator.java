@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class IssueGenerator {
-	
+
   @Autowired
   GitConfig config;
 
