@@ -2,9 +2,11 @@ package org.credential.finder.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.egit.github.core.Repository;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class UtilTest {
@@ -27,8 +29,15 @@ public class UtilTest {
 
   @Test
   public void testRepositoryUserContentUrl() {
-    assertEquals("https://raw.githubusercontent.com/davemcfadden/github-credential-finder/master/",
-        Util.repositoryUserContentUrl(repo, "master"));
+    List<Repository> repos = new ArrayList<Repository>();
+    repos.add(repo);
+    List<String> reponseList = Util.repositoryUserContentUrl(repos, "master");
+    for(String response : reponseList){
+      assertEquals("https://raw.githubusercontent.com/davemcfadden/github-credential-finder/master/",
+          response);
+      
+    }
+    
   }
 
   @Test
