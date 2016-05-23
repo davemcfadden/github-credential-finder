@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.credential.finder.analyzer.FileAnalyzer;
+import org.credential.finder.analyzer.FileAnalyzerTest;
 import org.credential.finder.config.GitConfig;
 import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.Repository;
@@ -22,14 +22,14 @@ import org.springframework.stereotype.Component;
 public class RepositoryScanner {
 
   @Autowired
-  private FileAnalyzer analyzer;
+  private FileAnalyzerTest analyzer;
 
   @Autowired
   private GitConfig config;
-  
+
   @Value("${ignore.file.extentions}")
   private String[] ignoredExtensions;
-  
+
   @Value("${ignore.file.names}")
   private String[] ignoredFileNames;
 
@@ -62,10 +62,11 @@ public class RepositoryScanner {
           LOGGER.error("Failed to scan directory : " + e);
         }
       } else if (content.getType().equals(FILE)) {
-        //get file type
-        String fileExtention = StringUtils.substring(content.getName(), StringUtils.lastIndexOf(content.getName(), ".") + 1);
-        if(!Arrays.asList(ignoredExtensions).contains(fileExtention) &&
-            !Arrays.asList(ignoredFileNames).contains(content.getName())){
+        // get file type
+        String fileExtention = StringUtils.substring(content.getName(),
+            StringUtils.lastIndexOf(content.getName(), ".") + 1);
+        if (!Arrays.asList(ignoredExtensions).contains(fileExtention)
+            && !Arrays.asList(ignoredFileNames).contains(content.getName())) {
           scanFile(content, repo);
         }
       }
@@ -100,7 +101,7 @@ public class RepositoryScanner {
           && encoding.equalsIgnoreCase(Blob.ENCODING_UTF8)) {
         fileAsText = new String(Base64.decodeBase64(response.getContent()));
         System.out.println("Decoded value is " + new String(fileAsText));
-        analyzer.analyseFile(fileAsText, repo, content);
+        // analyzer.analyseFile(fileAsText, repo, content);
       }
     } catch (IOException e) {
       LOGGER.error("Error in getting file data : " + e);;

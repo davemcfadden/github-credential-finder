@@ -2,6 +2,7 @@ package org.credential.finder.analyzer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.credential.finder.api.FinderInializer;
@@ -57,11 +58,17 @@ public class FileAnalyzer {
     violations.forEach(v -> LOGGER.debug("Potential violations found\n" + v.toString()));
     return violations;
   }
-  
 
+
+  /**
+   * Brutally crude evaluation and filter.
+   * 
+   * @param issues
+   * @return list of filtered violations
+   */
   private static List<Violation> evaluateAndFilter(List<Violation> issues) {
-    // TODO Auto-generated method stub
-    return null;
+    return issues.stream().filter(i -> ViolationEvaluator.trueViolation(i))
+        .collect(Collectors.toList());
   }
 
 }

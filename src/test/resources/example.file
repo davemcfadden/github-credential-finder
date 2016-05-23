@@ -2,6 +2,13 @@
 ---
 test file
 password
+password=1223
+password=****
+password=
+password = 
+password = " " 
+password = ' '
+password = ''
 key
 ---
 ---
