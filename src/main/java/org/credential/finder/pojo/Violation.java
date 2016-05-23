@@ -3,13 +3,15 @@ package org.credential.finder.pojo;
 public class Violation {
 
   public Violation() {}
-  
-  public Violation(String fileUrl, int lineNumber) {
+
+  public Violation(String fileUrl, String context, int lineNumber) {
     this.fileUrl = fileUrl;
+    this.context = context;
     this.lineNumber = lineNumber;
   }
-  
+
   private String fileUrl;
+  private String context;
   private int lineNumber;
 
   public String getFileUrl() {
@@ -18,6 +20,14 @@ public class Violation {
 
   public void setFileUrl(String fileUrl) {
     this.fileUrl = fileUrl;
+  }
+
+  public String getContext() {
+    return context;
+  }
+
+  public void setContext(String context) {
+    this.context = context;
   }
 
   public int getLineNumber() {
@@ -30,7 +40,8 @@ public class Violation {
 
   @Override
   public String toString() {
-    return "Violation [fileUrl=" + fileUrl + ", lineNumber=" + lineNumber + "]";
+    return "Violation [fileUrl=" + fileUrl + ", context=" + context + ", lineNumber=" + lineNumber
+        + "]";
   }
 
 }
