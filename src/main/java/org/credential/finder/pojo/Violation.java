@@ -1,4 +1,4 @@
-package org.crendential.finder.pojo;
+package org.credential.finder.pojo;
 
 public class Violation {
 
