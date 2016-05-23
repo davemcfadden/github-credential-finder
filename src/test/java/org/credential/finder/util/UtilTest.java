@@ -10,10 +10,13 @@ public class UtilTest {
 
   private Repository repo;
 
+  private String validFilePath;
+
   @Before
   public void setup() {
     repo = new Repository();
     repo.setHtmlUrl("https://github.com/davemcfadden/github-credential-finder/");
+    validFilePath = "src/test/resources/example.file";
   }
 
   @Test
@@ -34,8 +37,8 @@ public class UtilTest {
 
   @Test
   public void testStreamFileValidPath() {
-    assertEquals(10, Util.streamFile("src/test/resources/example.file").size());
-    assertEquals("key", Util.streamFile("src/test/resources/example.file").get(4));
+    assertEquals(10, Util.streamFile(validFilePath).size());
+    assertEquals("key", Util.streamFile(validFilePath).get(4));
   }
 
 
