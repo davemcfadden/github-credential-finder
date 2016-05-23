@@ -2,7 +2,6 @@ package org.credential.finder.analyzer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.credential.finder.api.FinderInializer;
@@ -37,7 +36,7 @@ public class FileAnalyzer {
     for (String hazard : hazardStrings) {
       for (String line : lines) {
         if (line.contains(hazard)) {
-          violations.add(new Violation(file, lines.indexOf(line) + 1));
+          violations.add(new Violation(file, line, (lines.indexOf(line) + 1)));
         }
       }
     }

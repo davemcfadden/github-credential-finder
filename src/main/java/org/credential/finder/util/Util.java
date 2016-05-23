@@ -17,7 +17,7 @@ public class Util {
   private final static Logger LOGGER = Logger.getLogger(Util.class);
 
   public static String repositoryUserContentUrl(Repository repo, String branch) {
-    String url = repo.getHtmlUrl() + "/" + branch + "/";
+    String url = repo.getHtmlUrl() + branch + "/";
     return url.replace("github.com", "raw.githubusercontent.com");
   }
 
