@@ -4,14 +4,16 @@ public class Violation {
 
   public Violation() {}
 
-  public Violation(String fileUrl, String context, int lineNumber) {
+  public Violation(String fileUrl, String context, String hazard, int lineNumber) {
     this.fileUrl = fileUrl;
     this.context = context;
+    this.hazard = hazard;
     this.lineNumber = lineNumber;
   }
 
   private String fileUrl;
   private String context;
+  private String hazard;
   private int lineNumber;
 
   public String getFileUrl() {
@@ -30,6 +32,14 @@ public class Violation {
     this.context = context;
   }
 
+  public String getHazard() {
+    return hazard;
+  }
+
+  public void setHazard(String hazard) {
+    this.hazard = hazard;
+  }
+
   public int getLineNumber() {
     return lineNumber;
   }
@@ -40,8 +50,8 @@ public class Violation {
 
   @Override
   public String toString() {
-    return "Violation [fileUrl=" + fileUrl + ", context=" + context + ", lineNumber=" + lineNumber
-        + "]";
+    return "Violation [fileUrl=" + fileUrl + ", context=" + context + ", hazard=" + hazard
+        + ", lineNumber=" + lineNumber + "]";
   }
 
 }

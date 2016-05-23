@@ -3,3 +3,8 @@ credentials
 secretKey
 password
 @EnableContextCredentials(accessKey =
+@EnableContextCredentials(accessKey=
+AWS_KEY
+AWS_SECRET_KEY
+AWS_SECRET
+github.api.authorizationToken

@@ -1,6 +1,5 @@
 package org.credential.finder;
 
-import org.credential.finder.analyzer.FileAnalyzer;
 import org.credential.finder.api.FinderInializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -11,11 +10,5 @@ public class Application {
     ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
     context.getBean(FinderInializer.class).run();
     ((ConfigurableApplicationContext) context).close();
-
-    /**
-     * Example call Dave
-     */
-    // secretKey
-    FileAnalyzer.findPotentialViolations("src/main/java/org/credential/finder/Application.java");
   }
 }

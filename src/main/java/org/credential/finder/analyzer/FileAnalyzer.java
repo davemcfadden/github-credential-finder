@@ -50,7 +50,7 @@ public class FileAnalyzer {
     for (String hazard : hazardStrings) {
       for (String line : lines) {
         if (line.contains(hazard)) {
-          violations.add(new Violation(filePath, line, (lines.indexOf(line) + 1)));
+          violations.add(new Violation(filePath, line, hazard, (lines.indexOf(line) + 1)));
         }
       }
     }
