@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.egit.github.core.Repository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class UtilTest {

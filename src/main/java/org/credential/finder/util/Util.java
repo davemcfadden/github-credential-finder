@@ -3,6 +3,7 @@ package org.credential.finder.util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,9 +17,14 @@ public class Util {
 
   private final static Logger LOGGER = Logger.getLogger(Util.class);
 
-  public static String repositoryUserContentUrl(Repository repo, String branch) {
-    String url = repo.getHtmlUrl() + branch + "/";
-    return url.replace("github.com", "raw.githubusercontent.com");
+  public static List<String> repositoryUserContentUrl(List<Repository> repos, String branch) {
+    List<String> urls = new ArrayList<String>();
+    for(Repository repo: repos){
+      String url = repo.getHtmlUrl() + branch + "/";
+      urls.add(url.replace("github.com", "raw.githubusercontent.com"));
+    }
+    return urls;
+    
   }
 
   public static List<String> getHazardStrings() {

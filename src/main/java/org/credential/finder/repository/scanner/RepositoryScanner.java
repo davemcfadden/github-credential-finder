@@ -1,14 +1,16 @@
 package org.credential.finder.repository.scanner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.credential.finder.analyzer.FileAnalyzerTest;
+import org.credential.finder.analyzer.FileAnalyzer;
 import org.credential.finder.config.GitConfig;
+import org.credential.finder.util.Util;
 import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryContents;
@@ -22,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class RepositoryScanner {
 
   @Autowired
-  private FileAnalyzerTest analyzer;
+  private FileAnalyzer analyzer;
 
   @Autowired
   private GitConfig config;
@@ -54,6 +56,7 @@ public class RepositoryScanner {
   }
 
   private void contentsScanner(List<RepositoryContents> contents, Repository repo) {
+    List<String> fileUrls = new ArrayList<String>();
     for (RepositoryContents content : contents) {
       if (content.getType().equals(DIRECTORY)) {
         try {
@@ -67,7 +70,7 @@ public class RepositoryScanner {
             StringUtils.lastIndexOf(content.getName(), ".") + 1);
         if (!Arrays.asList(ignoredExtensions).contains(fileExtention)
             && !Arrays.asList(ignoredFileNames).contains(content.getName())) {
-          scanFile(content, repo);
+          fileUrls.add(content.getPath());
         }
       }
     }
@@ -89,6 +92,7 @@ public class RepositoryScanner {
 
   // TODO create internal queue to pop file contents onto a queue which can be
   // analysed by another thread running FileAnalyzer
+  @Deprecated
   private void scanFile(RepositoryContents content, Repository repo) {
     LOGGER.info("We need to scan this file and look for credentials..");
     // if(content.getName().equalsIgnoreCase("readme.md")){
