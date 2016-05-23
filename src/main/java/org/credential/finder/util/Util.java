@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Repository;
@@ -27,6 +28,15 @@ public class Util {
       LOGGER.error(e);
     }
     return Collections.emptyList();
+  }
+
+  public static List<String> streamFile(String file) {
+    try {
+      return Files.lines(Paths.get(file)).collect(Collectors.toList());
+    } catch (IOException e) {
+      LOGGER.error("Unable to parse file: " + file + "\n" + e);
+      return Collections.emptyList();
+    }
   }
 }
 
