@@ -47,8 +47,8 @@ public class UtilTest {
 
   @Test
   public void testStreamFileValidPath() {
-    assertEquals(10, Util.streamFile(validFilePath).size());
-    assertEquals("key", Util.streamFile(validFilePath).get(4));
+    assertEquals(17, Util.streamFile(validFilePath).size());
+    assertEquals("password", Util.streamFile(validFilePath).get(3));
   }
 
 
