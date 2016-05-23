@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
-import org.credential.finder.api.FinderInializer;
 import org.credential.finder.pojo.Violation;
 import org.credential.finder.util.Util;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileAnalyzer {
 
-  private final static Logger LOGGER = Logger.getLogger(FinderInializer.class);
+  private final static Logger LOGGER = Logger.getLogger(FileAnalyzer.class);
 
   private static final List<String> hazardStrings = Util.getHazardStrings();
 
