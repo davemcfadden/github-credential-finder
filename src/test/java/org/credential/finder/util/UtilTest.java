@@ -14,12 +14,15 @@ public class UtilTest {
   private Repository repo;
 
   private String validFilePath;
-
+  
+  private String filePath;
+  
   @Before
   public void setup() {
     repo = new Repository();
     repo.setHtmlUrl("https://github.com/davemcfadden/github-credential-finder/");
     validFilePath = "src/test/resources/example.file";
+    filePath = "src/main/java/org/credential/finder/Application.java";
   }
 
   @Test
@@ -29,13 +32,12 @@ public class UtilTest {
 
   @Test
   public void testRepositoryUserContentUrl() {
-    List<Repository> repos = new ArrayList<Repository>();
-    repos.add(repo);
-    List<String> reponseList = Util.repositoryUserContentUrl(repos, "master");
+    List<String> filePaths = new ArrayList<String>();
+    filePaths.add(filePath);
+    List<String> reponseList = Util.repositoryUserContentUrl(repo, "master",filePaths);
     for(String response : reponseList){
-      assertEquals("https://raw.githubusercontent.com/davemcfadden/github-credential-finder/master/",
+      assertEquals("https://raw.githubusercontent.com/davemcfadden/github-credential-finder/master/" +filePath,
           response);
-      
     }
     
   }

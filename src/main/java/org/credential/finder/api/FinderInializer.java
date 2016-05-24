@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.credential.finder.config.GitConfig;
-import org.credential.finder.repository.scanner.RepositoryScanner;
+import org.credential.finder.repository.RepositoryScanner;
 import org.eclipse.egit.github.core.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,9 +25,9 @@ public class FinderInializer {
   public void run() {
     List<Repository> repos = new ArrayList<Repository>();
     try {
-      // just grabbing a single repo for testing
+      // just grabbing a single repo for testing assumption is this gets master only
       repos.addAll(config.getService().getRepositories("davemcfadden"));
-      //repos.add(config.getService().getRepository("davemcfadden", "aws-dynamo-service"));
+      // repos.add(config.getService().getRepository("davemcfadden", "aws-dynamo-service"));
     } catch (IOException e) {
       LOGGER.error("Failed to retrieve repos : " + e);
     }

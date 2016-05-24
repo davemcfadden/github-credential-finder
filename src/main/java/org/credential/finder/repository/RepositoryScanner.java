@@ -1,4 +1,4 @@
-package org.credential.finder.repository.scanner;
+package org.credential.finder.repository;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.credential.finder.analyzer.FileAnalyzer;
 import org.credential.finder.config.GitConfig;
+import org.credential.finder.constants.FinderConstants;
 import org.credential.finder.util.Util;
 import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.Repository;
@@ -19,12 +19,10 @@ import org.eclipse.egit.github.core.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class RepositoryScanner {
-
-  @Autowired
-  private FileAnalyzer analyzer;
 
   @Autowired
   private GitConfig config;
@@ -35,9 +33,6 @@ public class RepositoryScanner {
   @Value("${ignore.file.names}")
   private String[] ignoredFileNames;
 
-  private final static String DIRECTORY = "dir";
-  private final static String FILE = "file";
-  private String encoding = Blob.ENCODING_UTF8;
 
   private final static Logger LOGGER = Logger.getLogger(RepositoryScanner.class);
 
@@ -55,16 +50,24 @@ public class RepositoryScanner {
     }
   }
 
+  /**
+   * Will scan the current directory and identify which is a file and which is a folder if it is a
+   * file, get the path and build a URL
+   * 
+   * @param contents
+   * @param repo
+   */
+
   private void contentsScanner(List<RepositoryContents> contents, Repository repo) {
     List<String> fileUrls = new ArrayList<String>();
     for (RepositoryContents content : contents) {
-      if (content.getType().equals(DIRECTORY)) {
+      if (content.getType().equals(FinderConstants.DIRECTORY)) {
         try {
           scanDirectory(content, repo);
         } catch (IOException e) {
           LOGGER.error("Failed to scan directory : " + e);
         }
-      } else if (content.getType().equals(FILE)) {
+      } else if (content.getType().equals(FinderConstants.FILE)) {
         // get file type
         String fileExtention = StringUtils.substring(content.getName(),
             StringUtils.lastIndexOf(content.getName(), ".") + 1);
@@ -74,14 +77,39 @@ public class RepositoryScanner {
         }
       }
     }
+    buildGithubUrls(repo, fileUrls);
+
   }
 
-  // TODO try and speed this up
+
+  /**
+   * This calls Util.repositoryUserContentUrl method which will return the raw content URL for this
+   * github repository. Once that path has been returned we will use common.io to download the file
+   * to the local computer
+   * 
+   * @param repo
+   * @param fileUrls
+   */
+  private void buildGithubUrls(Repository repo, List<String> fileUrls) {
+    if (!CollectionUtils.isEmpty(fileUrls)) {
+      List<String> urls = Util.repositoryUserContentUrl(repo, FinderConstants.MASTER, fileUrls);
+      FileDownloader.downloadFile(urls);
+    }
+  }
+
   private void scanDirectory(RepositoryContents content, Repository repo) throws IOException {
     List<RepositoryContents> contents = callContentsService(repo, content.getPath());
     contentsScanner(contents, repo);
   }
 
+  /**
+   * This will call the GitApi to get the contents of a repository path
+   * 
+   * @param repo
+   * @param path
+   * @return
+   * @throws IOException
+   */
   private List<RepositoryContents> callContentsService(Repository repo, String path)
       throws IOException {
     ContentsService contentsService = new ContentsService(config.getClient());
@@ -90,8 +118,16 @@ public class RepositoryScanner {
     return contents;
   }
 
-  // TODO create internal queue to pop file contents onto a queue which can be
-  // analysed by another thread running FileAnalyzer
+
+
+  /**
+   * This has been deprecated in favour of downloading the files locally and analyzing them. This
+   * was due to the restriction on the number of API calls that can be made to GitHub
+   * 
+   * @param content
+   * @param repo
+   */
+  @SuppressWarnings("unused")
   @Deprecated
   private void scanFile(RepositoryContents content, Repository repo) {
     LOGGER.info("We need to scan this file and look for credentials..");
@@ -101,8 +137,8 @@ public class RepositoryScanner {
     try {
       Blob response = dataService.getBlob(repo, content.getSha());
       // lets validate our response type before trying to decode..
-      if (response.getEncoding().equals(Blob.ENCODING_BASE64) && encoding != null
-          && encoding.equalsIgnoreCase(Blob.ENCODING_UTF8)) {
+      if (response.getEncoding().equals(Blob.ENCODING_BASE64) && FinderConstants.ENCODING != null
+          && FinderConstants.ENCODING.equalsIgnoreCase(Blob.ENCODING_UTF8)) {
         fileAsText = new String(Base64.decodeBase64(response.getContent()));
         System.out.println("Decoded value is " + new String(fileAsText));
         // analyzer.analyseFile(fileAsText, repo, content);

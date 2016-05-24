@@ -16,13 +16,6 @@ public class FileAnalyzer {
 
   private static final List<String> hazardStrings = Util.getHazardStrings();
 
-  /*
-   * @Autowired private IssueGenerator issueGenerator;
-   * 
-   * public void analyseFile(String file, Repository repo, RepositoryContents content) {
-   * LOGGER.debug("Searching file : " + content.getName() + " for passwords"); }
-   */
-
   /**
    * Scan the file provided and identify strings that may contain private information. Evaluate the
    * candidates and return a list of potential violations.
@@ -69,5 +62,6 @@ public class FileAnalyzer {
     return issues.stream().filter(i -> ViolationEvaluator.trueViolation(i))
         .collect(Collectors.toList());
   }
+
 
 }
