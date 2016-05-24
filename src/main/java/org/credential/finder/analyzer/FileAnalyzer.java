@@ -23,10 +23,14 @@ public class FileAnalyzer {
    * @param filePath
    * @return list of violations
    */
-  public static List<Violation> findIssues(String filePath) {
-    List<Violation> issues = findPotentialViolations(filePath);
-    issues = evaluateAndFilter(issues);
-    return issues;
+  public static void findIssues(List<String> filePaths) {
+    List<Violation> issues = new ArrayList<>();
+    for (String filePath : filePaths) {
+      findPotentialViolations(filePath);
+      issues = evaluateAndFilter(issues);
+    }
+    // lets open an issue from here
+    issues.forEach(issue -> LOGGER.debug("Opening issue for : " + issue));
   }
 
   /**

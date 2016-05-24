@@ -1,5 +1,6 @@
 package org.credential.finder.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,7 +23,7 @@ public class Util {
       List<String> fileUrls) {
     List<String> urls = new ArrayList<String>();
     for (String singlePath : fileUrls) {
-      String url = repo.getHtmlUrl() + branch + "/";
+      String url = StringUtils.join(repo.getHtmlUrl(), "/", branch, "/");
       url = url.replace("github.com", "raw.githubusercontent.com");
       urls.add(StringUtils.join(url, singlePath));
     }
@@ -44,6 +45,15 @@ public class Util {
     } catch (IOException e) {
       LOGGER.error("Unable to parse file: " + file + "\n" + e);
       return Collections.emptyList();
+    }
+  }
+
+  public static void cleanUp(List<String> fileUrls) {
+    for (String filepath : fileUrls) {
+      File f = new File(filepath);
+      if (f.exists()) {
+        f.delete();
+      }
     }
   }
 }

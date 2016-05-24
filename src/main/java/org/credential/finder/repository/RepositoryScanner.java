@@ -3,11 +3,14 @@ package org.credential.finder.repository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.credential.finder.analyzer.FileAnalyzer;
 import org.credential.finder.config.GitConfig;
 import org.credential.finder.constants.FinderConstants;
 import org.credential.finder.util.Util;
@@ -34,11 +37,15 @@ public class RepositoryScanner {
   private String[] ignoredFileNames;
 
 
+  private List<String> filePaths = new ArrayList<String>();
+
+
   private final static Logger LOGGER = Logger.getLogger(RepositoryScanner.class);
 
   public void scanRepository(List<Repository> repos) {
     for (Repository repo : repos) {
       List<RepositoryContents> contents = null;
+      filePaths.addAll(Collections.emptyList());
       System.out.println(repo.getName());
       try {
         // empty string for path so we start at the root
@@ -47,6 +54,8 @@ public class RepositoryScanner {
       } catch (IOException e) {
         LOGGER.error("Cannot get contents from repo " + repo.getName() + " : " + e);
       }
+     FileAnalyzer.findIssues(buildGithubUrls(repo, filePaths));
+     Util.cleanUp(filePaths);
     }
   }
 
@@ -59,7 +68,6 @@ public class RepositoryScanner {
    */
 
   private void contentsScanner(List<RepositoryContents> contents, Repository repo) {
-    List<String> fileUrls = new ArrayList<String>();
     for (RepositoryContents content : contents) {
       if (content.getType().equals(FinderConstants.DIRECTORY)) {
         try {
@@ -73,12 +81,10 @@ public class RepositoryScanner {
             StringUtils.lastIndexOf(content.getName(), ".") + 1);
         if (!Arrays.asList(ignoredExtensions).contains(fileExtention)
             && !Arrays.asList(ignoredFileNames).contains(content.getName())) {
-          fileUrls.add(content.getPath());
+          filePaths.add(content.getPath());
         }
       }
     }
-    buildGithubUrls(repo, fileUrls);
-
   }
 
 
@@ -89,12 +95,15 @@ public class RepositoryScanner {
    * 
    * @param repo
    * @param fileUrls
+   * @return 
    */
-  private void buildGithubUrls(Repository repo, List<String> fileUrls) {
+  private List<String> buildGithubUrls(Repository repo, List<String> fileUrls) {
+    List<String> localFilePaths = null;
     if (!CollectionUtils.isEmpty(fileUrls)) {
       List<String> urls = Util.repositoryUserContentUrl(repo, FinderConstants.MASTER, fileUrls);
-      FileDownloader.downloadFile(urls);
+      localFilePaths = FileDownloader.downloadFile(urls);
     }
+    return localFilePaths;
   }
 
   private void scanDirectory(RepositoryContents content, Repository repo) throws IOException {

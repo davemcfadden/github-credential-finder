@@ -6,7 +6,8 @@ public class FileAnalyzerTest {
 
   @Test
   public void test1() {
-    FileAnalyzer.findIssues("src/test/resources/example.file").forEach(System.out::println);
+    /*FileAnalyzer.findIssues(Arrays.asList("src/test/resources/example.file"))
+        .forEach(System.out::println);*/
   }
 
 }

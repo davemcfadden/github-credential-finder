@@ -20,7 +20,7 @@ public class UtilTest {
   @Before
   public void setup() {
     repo = new Repository();
-    repo.setHtmlUrl("https://github.com/davemcfadden/github-credential-finder/");
+    repo.setHtmlUrl("https://github.com/davemcfadden/github-credential-finder");
     validFilePath = "src/test/resources/example.file";
     filePath = "src/main/java/org/credential/finder/Application.java";
   }
