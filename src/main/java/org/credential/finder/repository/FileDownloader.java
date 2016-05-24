@@ -18,7 +18,7 @@ public class FileDownloader {
   public static List<String> downloadFile(List<String> repoUrls) {
     List<String> localFilePaths = new ArrayList<String>();
     for (String url : repoUrls) {
-      String fileName = StringUtils.substring(url, StringUtils.lastIndexOf(url, "\\") + 1);
+      String fileName = StringUtils.substring(url, StringUtils.lastIndexOf(url, "/") + 1);
       try {
         URL link = new URL(url);
         FileUtils.copyURLToFile(link, new File(FinderConstants.DOWNLOAD_DESTINATION, fileName));

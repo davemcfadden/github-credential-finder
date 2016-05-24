@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.credential.finder.constants.FinderConstants;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class FileDownloaderTest {
@@ -23,12 +23,22 @@ public class FileDownloaderTest {
     repoUrls = createListOfUrls();
     fileNames = getFileNames();
   }
+  
+  @After
+  public void cleanUp(){
+    for(String fileName : fileNames){
+      File f = new File(StringUtils.join(FinderConstants.DOWNLOAD_DESTINATION, fileName));
+      if(f.exists()){
+        f.delete();
+      }
+    }
+  }
 
 
   @Test
   public void downloadFileTest() {
     FileDownloader.downloadFile(repoUrls);
-    for (int i = 0; i <= repoUrls.size(); i++) {
+    for (int i = 0; i < repoUrls.size(); i++) {
       File f = new File(StringUtils.join(FinderConstants.DOWNLOAD_DESTINATION, fileNames.get(i)));
       assertTrue(f.exists());
       assertTrue(!f.isDirectory());
@@ -54,7 +64,7 @@ public class FileDownloaderTest {
   private List<String> getFileNames() {
     List<String> fileNames = new ArrayList<String>();
     for (String url : repoUrls) {
-      fileNames.add(StringUtils.substring(url, StringUtils.lastIndexOf(url, "\\") + 1));
+      fileNames.add(StringUtils.substring(url, StringUtils.lastIndexOf(url, "/") + 1));
     }
     return fileNames;
   }
