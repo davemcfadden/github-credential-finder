@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.credential.finder.constants.FinderConstants;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class FileDownloaderTest {
@@ -36,6 +37,7 @@ public class FileDownloaderTest {
 
 
   @Test
+  @Ignore
   public void downloadFileTest() {
     FileDownloader.downloadFile(repoUrls);
     for (int i = 0; i < repoUrls.size(); i++) {
