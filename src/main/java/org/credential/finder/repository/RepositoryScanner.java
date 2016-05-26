@@ -45,7 +45,7 @@ public class RepositoryScanner {
   public void scanRepository(List<Repository> repos) {
     for (Repository repo : repos) {
       List<RepositoryContents> contents = null;
-      filePaths.addAll(Collections.emptyList());
+      filePaths.clear();
       System.out.println(repo.getName());
       try {
         // empty string for path so we start at the root
