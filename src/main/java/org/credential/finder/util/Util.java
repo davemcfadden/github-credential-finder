@@ -48,8 +48,8 @@ public class Util {
     }
   }
 
-  public static void cleanUp(List<String> fileUrls) {
-    for (String filepath : fileUrls) {
+  public static void fileCleanUp(List<String> filePaths) {
+    for (String filepath : filePaths) {
       File f = new File(filepath);
       if (f.exists()) {
         f.delete();
