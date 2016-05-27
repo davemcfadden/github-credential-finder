@@ -55,7 +55,7 @@ public class RepositoryScanner {
         LOGGER.error("Cannot get contents from repo " + repo.getName() + " : " + e);
       }
      FileAnalyzer.findIssues(buildGithubUrls(repo, filePaths));
-     Util.cleanUp(filePaths);
+     Util.fileCleanUp(filePaths);
     }
   }
 
